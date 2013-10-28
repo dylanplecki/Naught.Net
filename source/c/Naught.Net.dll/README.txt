@@ -9,7 +9,7 @@ Please read the LICENSE.txt file for important information.
 Project Link: http://forums.bistudio.com/showthread.php?166534-Naught-Net
 
 This code comes as-is, and omits some required dependencies due to size constraints.
-Thus this code cannot be easily compiled at its current state.
+Thus this code cannot be compiled at its current state, or within the restraints of the license.
 
 Compiled versions can be obtained either in the Debug and Release directories, or at the project web-link above.
 Code auditing (or run-time breakdown) of these compiled versions are allowed and welcome.

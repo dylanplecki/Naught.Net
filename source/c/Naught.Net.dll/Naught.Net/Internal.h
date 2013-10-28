@@ -30,7 +30,7 @@ namespace Internal
 	void TruncateString(string &s, const int &size);
 	int CountTruncChunks(const string &s, const int &size);
 	string GetTruncChunks(int resultHandle, int chunk);
-	void ThreadWrapper(vector<string> &params);
+	string GetCurDir();
 
 	namespace Strings
 	{
@@ -51,6 +51,17 @@ namespace Internal
 					new HexEncoder (
 						new StringSink(output))));
 			return output;
+		};
+	};
+
+	namespace Data
+	{
+		template <class branchType, class iteratorType>
+		string TreeToSQF(branchType &mainBranch, function<iteratorType(branchType&)> beginFunc, function<iteratorType(branchType&)> endFunc, function<void(unsigned int, iteratorType, string&)> addFunc);
+		namespace XML
+		{
+			string NodeAttrToSQF(pugi::xml_node &parentNode);
+			string NodeToSQF(pugi::xml_node &parentNode);
 		};
 	};
 

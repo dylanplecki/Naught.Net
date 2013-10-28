@@ -12,43 +12,26 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-// Macros
-#define FUNCTION_0(fn, multiT, params) { #fn, fn, multiT, params }
-#define FUNCTION_1(ns1, fn, multiT, params) { #fn, &ns1::fn, multiT, params }
-#define FUNCTION_2(ns1, ns2, fn, multiT, params) { #fn, &ns1::ns2::fn, multiT, params }
-#define EXT_FUNC_0(fn, multiT, params) FUNCTION_1(External, fn, multiT, params)
-#define EXT_FUNC_1(ns1, fn, multiT, params) FUNCTION_2(External, ns1, fn, multiT, params)
-
 #include "Globals.h"
 #include "Internal.h"
 #include "External.h"
+#include "resource.h"
 
-struct Function {
-	string name;
-	string (*func)( vector<string> &params );
-	bool threaded;
-	unsigned int params;
+namespace Main
+{
+	struct Function {
+		string name;
+		string (*func)( vector<string> &params );
+		bool threaded;
+		unsigned int params;
+	};
+
+	extern Function ExtFunctionsArray[];
+	extern vector<Function> ExtFunctions;
+
+	string Init();
+	string CallFunc(string &sFunc, vector<string> &params);
+	void CreateConfig(fstream &config);
 };
-
-static Function ExtFunctionsArray[] = {
-	{"GetVersion",		External::GetVersion,								false,	0	},
-	{"Test",			External::Test,										false,	0	},
-	{"ReturnData",		External::ReturnData,								false,	1	},
-	{"GetResultChunk",	External::GetResultChunk,							false,	2	},
-	{"RegexMatch",		External::Strings::RegexMatch,						false,	2	},
-	{"RegexSearch",		External::Strings::RegexSearch,						false,	2	},
-	{"RegexReplace",	External::Strings::RegexReplace,					false,	3	},
-	{"HashMD2",			External::Strings::HashString<CryptoPP::MD2>,		false,	1	},
-	{"HashMD4",			External::Strings::HashString<CryptoPP::MD4>,		false,	1	},
-	{"HashMD5",			External::Strings::HashString<CryptoPP::MD5>,		false,	1	},
-	{"HashSHA1",		External::Strings::HashString<CryptoPP::SHA1>,		false,	1	},
-	{"HashSHA256",		External::Strings::HashString<CryptoPP::SHA256>,	false,	1	},
-	{"Download",		External::Network::Download,						true,	1	}
-};
-
-static vector<Function> ExtFunctions(ExtFunctionsArray, (ExtFunctionsArray + (sizeof(ExtFunctionsArray) / sizeof(Function))) );
-
-string Init();
-string CallFunc( string &sFunc, vector<string> &params );
 
 #endif

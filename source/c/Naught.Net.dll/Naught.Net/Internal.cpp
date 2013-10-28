@@ -56,6 +56,17 @@ namespace Internal
 		return returnString;
 	};
 
+	string GetCurDir()
+	{
+		char bChar[MAX_PATH];
+		WCHAR buffer[MAX_PATH];
+		GetModuleFileName( NULL, buffer, MAX_PATH );
+		WideCharToMultiByte(CP_ACP, 0, buffer, -1, bChar, MAX_PATH, NULL, NULL);
+		string result = string( bChar );
+		string::size_type pos = result.find_last_of( "\\/" );
+		return result.substr( 0, pos );
+	};
+
 	namespace Strings
 	{
 		char* GetNonConstStr(const string &s)
@@ -118,9 +129,54 @@ namespace Internal
 					result += ",";
 				result += string("\"") + x.str() + string("\"");
 				++i;
-			}
+			};
 			result += "]";
 			return result;
+		};
+	};
+
+	namespace Data
+	{
+		template <class branchType, class iteratorType>
+		string TreeToSQF(branchType &mainBranch, function<iteratorType(branchType&)> beginFunc, function<iteratorType(branchType&)> endFunc, function<void(unsigned int, iteratorType, string&)> addFunc)
+		{
+			string result = "["; // Opening SQF Array
+			unsigned int i = 0;
+			for (iteratorType it = beginFunc(mainBranch); it != endFunc(mainBranch); ++it) {
+				addFunc(i, it, result);
+				++i;
+			};
+			result += "]"; // Closing SQF Array
+			return result;
+		};
+
+		namespace XML
+		{
+			string NodeAttrToSQF(pugi::xml_node &parentNode) // result = [["Attr", "Value"], ...];
+			{
+				return TreeToSQF<pugi::xml_node,pugi::xml_attribute_iterator>(parentNode, [](pugi::xml_node &branch) {return branch.attributes_begin();}, [](pugi::xml_node &branch) {return branch.attributes_end();}, [](unsigned int i, pugi::xml_attribute_iterator it, string &result) {
+					if (i > 0) result += ","; // Adding comma for list sizes > 0
+					result += "["; // Opening Attribute
+					result += "\"" + string( it->name() ) + "\""; // Adding Attribute Name
+					result += ",";
+					result += "\"" + string( it->value() ) + "\""; // Adding Attribute Value
+					result += "]"; // Closing Attribute
+				});
+			};
+
+			string NodeToSQF(pugi::xml_node &parentNode) // result = [["Node", [Attributes], [ChildNodes]], ...];
+			{
+				return TreeToSQF<pugi::xml_node,pugi::xml_node_iterator>(parentNode, [](pugi::xml_node &branch) {return branch.begin();}, [](pugi::xml_node &branch) {return branch.end();}, [](unsigned int i, pugi::xml_node_iterator it, string &result) {
+					if (i > 0) result += ","; // Adding comma for list sizes > 0
+					result += "["; // Opening Node
+					result += "\"" + string( it->name() ) + "\""; // Adding Node Name
+					result += ",";
+					result += Internal::Data::XML::NodeAttrToSQF(*it); // Opening + Adding + Closing Node Attributes
+					result += ",";
+					result += Internal::Data::XML::NodeToSQF(*it); // Opening + Adding + Closing Child Nodes
+					result += "]"; // Closing Node
+				});
+			};
 		};
 	};
 

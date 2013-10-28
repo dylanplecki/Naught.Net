@@ -35,6 +35,11 @@ namespace External
 		};
 	};
 
+	namespace Data
+	{
+		string ParseXML(vector<string> &params);
+	};
+
 	namespace Network
 	{
 		string Download(vector<string> &params);

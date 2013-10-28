@@ -93,6 +93,25 @@ namespace External
 		};
 	};
 
+	namespace Data
+	{
+		string ParseXML(vector<string> &params)
+		{
+			pugi::xml_document doc;
+			pugi::xml_parse_result result = doc.load( (params[0]).c_str() );
+			if (result) {
+				return Internal::Data::XML::NodeToSQF(doc);
+			} else {return Internal::ErrorMessage("XML source parsed with errors; aborted.");};
+		};
+
+		string ParseYAML(vector<string> &params)
+		{
+			YAML::Node node = YAML::Load( params[0] );
+
+			return "";
+		};
+	};
+
 	namespace Network
 	{
 		string Download(vector<string> &params)

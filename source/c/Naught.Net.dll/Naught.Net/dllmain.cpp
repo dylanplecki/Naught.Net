@@ -38,7 +38,7 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 	curOutputSize -= 1;
 	string result;
 
-	if (string(function) == "Initialization") {result = Init();} else {
+	if (string(function) == "Initialization") {result = Main::Init();} else {
 		if (Initialization)
 		{
 			vector<string> arguments = Internal::Strings::SplitString(string(function), FUNC_DELIMETER, 1);
@@ -47,7 +47,7 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 			if (arguments.size() > 1)
 				parameters = Internal::Strings::SplitString(arguments[1], PARAM_DELIMETER);
 
-			result = CallFunc( arguments[0], parameters );
+			result = Main::CallFunc( arguments[0], parameters );
 
 			Internal::TruncateString(result, curOutputSize);
 		} else {result = Internal::ErrorMessage("Initialization has not been called.");};
@@ -56,32 +56,77 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 	strncpy( output, result.c_str(), curOutputSize );
 };
 
-string Init()
+namespace Main
 {
-	if (!Initialization) {
-		Initialization = true;
-		thread *main = new thread(Internal::Threading::MainThread); // Launch Main Thread
+	Function ExtFunctionsArray[] = {
+		{"GetVersion",		External::GetVersion,								false,	0	},
+		{"Test",			External::Test,										false,	0	},
+		{"ReturnData",		External::ReturnData,								false,	1	},
+		{"GetResultChunk",	External::GetResultChunk,							false,	2	},
+		{"RegexMatch",		External::Strings::RegexMatch,						false,	2	},
+		{"RegexSearch",		External::Strings::RegexSearch,						false,	2	},
+		{"RegexReplace",	External::Strings::RegexReplace,					false,	3	},
+		{"HashMD2",			External::Strings::HashString<CryptoPP::MD2>,		false,	1	},
+		{"HashMD4",			External::Strings::HashString<CryptoPP::MD4>,		false,	1	},
+		{"HashMD5",			External::Strings::HashString<CryptoPP::MD5>,		false,	1	},
+		{"HashSHA1",		External::Strings::HashString<CryptoPP::SHA1>,		false,	1	},
+		{"HashSHA256",		External::Strings::HashString<CryptoPP::SHA256>,	false,	1	},
+		{"ParseXML",		External::Data::ParseXML,							false,	1	},
+		{"Download",		External::Network::Download,						true,	1	}
 	};
-	vector<string> params; // Empty Value
-	return External::GetVersion(params);
-};
 
-string CallFunc( string &sFunc, vector<string> &params )
-{
-	vector<Function>::iterator i = ExtFunctions.begin();
-	string result;
-	while (i != ExtFunctions.end()) {
-		if ((*i).name == sFunc)
-			break;
-		++i;
-	};
-	if ((i != ExtFunctions.end()) && (params.size() >= (*i).params)) {
-		if ((*i).threaded) {
-			Internal::Threading::WorkerThread *t1 = new Internal::Threading::WorkerThread( (*i).func );
-			result = string(RETURN_HANDLE) + string(PARAM_DELIMETER) + to_string(t1->Start(params));
-		} else {
-			result = (*i).func(params);
+	vector<Function> ExtFunctions(ExtFunctionsArray, (ExtFunctionsArray + (sizeof(ExtFunctionsArray) / sizeof(Function))) );
+
+	string Init()
+	{
+		if (!Initialization) {
+			Initialization = true;
+
+			string configPath = Internal::GetCurDir() + string(CONFIG_FILE);
+			fstream config(configPath);
+
+			if (!config.good()) { // Create New File
+				Main::CreateConfig(config);
+			};
+
+			if (config.good()) { // Read File
+
+			};
+
+			thread *main = new thread(Internal::Threading::MainThread); // Launch Main Thread
 		};
-	} else {result = Internal::ErrorMessage("Function Not Found.");};
-	return result;
+
+		vector<string> params; // Empty Value
+		return External::GetVersion(params);
+	};
+
+	string CallFunc(string &sFunc, vector<string> &params)
+	{
+		vector<Main::Function>::iterator i = Main::ExtFunctions.begin();
+		string result;
+		while (i != Main::ExtFunctions.end()) {
+			if ((*i).name == sFunc)
+				break;
+			++i;
+		};
+		if ((i != Main::ExtFunctions.end()) && (params.size() >= (*i).params)) {
+			if ((*i).threaded) {
+				Internal::Threading::WorkerThread *t1 = new Internal::Threading::WorkerThread( (*i).func );
+				result = string(RETURN_HANDLE) + string(PARAM_DELIMETER) + to_string(t1->Start(params));
+			} else {
+				result = (*i).func(params);
+			};
+		} else {result = Internal::ErrorMessage("Function Not Found.");};
+		return result;
+	};
+
+	void CreateConfig(fstream &config)
+	{
+		HINSTANCE hInst = GetModuleHandle(NULL);
+		HRSRC hRes = FindResource(hInst, MAKEINTRESOURCE(DFT_CONFIG), L"TEXT");
+		HGLOBAL hMem = LoadResource(hInst, hRes);
+		config << (char*)LockResource(hMem);
+		config.flush();
+		FreeResource(hMem);
+	};
 };

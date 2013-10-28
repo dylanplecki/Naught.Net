@@ -14,8 +14,10 @@
 #include "targetver.h"
 
 #include <windows.h>
+#include <Shlwapi.h>
 #include <math.h>
 #include <iostream>
+#include <fstream>
 #include <chrono>
 #include <thread>
 #include <atomic>
@@ -25,6 +27,8 @@
 #include <regex>
 #include <boost\lexical_cast.hpp>
 #include <curl.h>
+#include <pugixml.hpp>
+//#include <yaml-cpp\yaml.h>
 #include <hex.h>
 
 #include <md2.h>
@@ -40,3 +44,5 @@
 	#pragma comment(lib,"cryptlibd.lib")
 	#pragma comment(lib,"libcurl_a_debug.lib")
 #endif
+
+#pragma comment(lib,"libyaml-cppmd.lib")

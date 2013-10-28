@@ -16,7 +16,10 @@
 #define WIN32_LEAN_AND_MEAN
 
 // Program Defines
-#define SOFTWARE_VERSION		"1.0.0.1"
+#define SOFTWARE_VERSION		"1.0.1.1"
+#define CONFIG_FILE				"config.yml"
+
+// Default Defines
 #define FUNC_DELIMETER			"#"
 #define PARAM_DELIMETER			"~"
 #define RETURN_ERROR			"#!NAUGHT_NET_ERROR"
