@@ -20,36 +20,12 @@
 
 #include "script_component.hpp"
 
-SCRIPT(newReturnHandler);
+SCRIPT(escapeString);
 ASSERT_PASSED_ARRAY;
-REQUIRED_PARAMS(3);
+REQUIRED_PARAMS(2);
 
-private ["_handle"];
-_handle = _this spawn {
-	private ["_params", "_return"];
-	_function	= _this select 0;
-	_params		= _this select 1;
-	_code		= _this select 2;
-	
-	_return = [_function, _params] call COMMONFUNC(callExtensionWrapper);
-	
-	TRACE_3("Naught.Net Return Handler: Break Point 1", _gvar, _params, _return);
-	
-	if ( IS_TYPE(_code, "STRING") ) then {
-		_code = compile _code;
-	};
-	
-	if ( IS_TYPE(_return, "SCALAR") ) then {
-		private ["_rHandle"];
-		_rHandle = _return;
-		waitUntil {
-			_return = ["ReturnData", _rHandle] call COMMONFUNC(callExtensionWrapper);
-			!(isNil "_return");
-		};
-		TRACE_2("Naught.Net Return Handler: Break Point 2", _rHandle, _return);
-	};
-	
-	_return call _code;
-};
-
-_handle
+private ["_string", "_delimeter"];
+_string		= _this select 0;
+_delimeter	= _this select 1;
+_stringArr	= toArray(_string);
+_delimArr	= toArray(_delimeter);

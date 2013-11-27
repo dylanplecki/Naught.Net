@@ -18,16 +18,27 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define COMPONENT main
+class Naught_Net { // External Class Reference
+	class Registry {
+		class DllExtension {
+			dllName = "Naught.Net";
+			class Delimiters {
+				function = "#";
+				parameter = "~";
+				message = "!#";
+			};
+			class Messages {
+				error = "NAUGHT_NET_ERROR";
+				truncated = "NAUGHT_NET_TRUNC";
+				handle = "NAUGHT_NET_HANDL";
+				null = "NAUGHT_NET__NULL";
+			};
+		};
+	};
+};
 
-#include "\x\Naught.Net\addons\naught.net.main\script_mod.hpp"
-
-#ifdef DEBUG_ENABLED_MAIN
-	#define DEBUG_MODE_FULL
-#endif
-
-#ifdef DEBUG_SETTINGS_MAIN
-	#define DEBUG_SETTINGS DEBUG_SETTINGS_MAIN
-#endif
-
-#include "\x\Naught.Net\addons\naught.net.main\script_macros.hpp"
+class CfgPatches {
+	class Naught_Net_IO : Naught_Net {
+		requiredAddons[] = {"Naught_Net_Main", "Naught_Net_Common", "Naught_Net_Strings"};
+	};
+};

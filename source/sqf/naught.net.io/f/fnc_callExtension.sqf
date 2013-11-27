@@ -18,3 +18,17 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "script_component.hpp"
+
+SCRIPT(callExtension);
+ASSERT_PASSED_ARRAY;
+REQUIRED_PARAMS(1);
+
+private ["_function", "_parameters", "_arguments", "_return"];
+_function	= _this select 0;
+_parameters	= PARAM_DEFAULT(1, []);
+
+_arguments	= [_function, _parameters] call FUNC(concatenateArgs);
+_return		= EXTENSION_NAME callExtension _arguments;
+
+_return

@@ -18,13 +18,41 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+class Naught_Net
+{
+	/* General Information */
+	name = "Naught.Net";
+	dir = "@Naught.Net";
+	version = 1.0.1.1;
+	author[] = {"Naught"};
+	authorUrl = "http://github.com/dylanplecki/Naught.Net";
+	
+	/* Requirements */
+	requiredAddons[] = {};
+	requiredVersion = 1;
+	
+	/* Includes */
+	units[] = {};
+	weapons[] = {};
+	
+	/* Display */
+	hideName = "false";
+	hidePicture = "false";
+	picture = "\x\Naught.Net\addons\naught.net.main\rsc\images\Naught_Net.png";
+	
+	/* Extra */
+	actionName = "Website";
+	action = "http://github.com/dylanplecki/Naught.Net";
+	description = "Issues: http://github.com/dylanplecki/Naught.Net/issues<br />Documentation: http://github.com/dylanplecki/Naught.Net/wiki";
+	
+	/* Registry: Static Definitions */
+	class Registry {};
+};
+
 class CfgPatches {
-	class naught_net_main {
-		units[] = {};
-		requiredVersion = 1;
-		requiredAddons[] = { "CBA_main" };
-		version = VERSION;
-		author[] = {"Naught"};
-		authorUrl = "http://unitedoperations.net";
-	};
+	class Naught_Net_Main : Naught_Net {};
+};
+
+class CfgMods {
+	class Naught_Net_Mod : Naught_Net {};
 };

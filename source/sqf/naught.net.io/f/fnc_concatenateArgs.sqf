@@ -20,12 +20,33 @@
 
 #include "script_component.hpp"
 
-SCRIPT(testExtension);
+SCRIPT(concatenateArgs);
 ASSERT_PASSED_ARRAY;
 
-private ["_params", "_return"];
-_params = PARAM_DEFAULT(0, []);
+private ["_function", "_parameters", "_return"];
+_function		= _this select 0;
+_parameters		= PARAM_DEFAULT(1, []);
+_return			= "";
 
-_return = ["Test", _params] call COMMONFUNC(callExtension);
+if ( !IS_TYPE(_parameters, "ARRAY") ) then {
+	_parameters = [_parameters];
+};
+
+if ((count _parameters) > 0) then {
+	{ // forEach
+		private ["_string"];
+		_string = str(_x);
+		if (_string != "") then {
+			if (_return != "") then {_return = _return + PARAM_DELIMETER};
+			_return = _return + ([_string, PARAM_DELIMETER, "-"] call CBA_fnc_replace);
+		};
+	} forEach _parameters;
+};
+
+if (_return != "") then {
+	_return = _function + FUNC_DELIMETER + _return;
+} else {
+	_return = _function;
+};
 
 _return

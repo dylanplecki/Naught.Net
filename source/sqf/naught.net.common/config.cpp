@@ -24,10 +24,9 @@ class CfgPatches {
 	class naught_net_common {
 		units[] = {};
 		requiredVersion = 1;
-		requiredAddons[] = { "naught_net_main" };
+		requiredAddons[] = {"naught_net_main"};
 		version = VERSION;
 		author[] = {"Naught"};
-		authorUrl = "http://unitedoperations.net";
 	};
 };
 

@@ -26,7 +26,7 @@ ASSERT_PASSED_ARRAY;
 #define MESSAGE_TYPES [RETURN_ERROR, RETURN_TRUNCATED, RETURN_HANDLE, RETURN_NULL]
 
 private ["_return"];
-_return = _this call COMMONFUNC(callExtension);
+_return = _this call FUNC(callExtension);
 
 if ((toArray(_return) select 0) == (toArray(RETURN_GENERIC) select 0)) then { // Possible Message from Extension
 	private ["_message"];
@@ -37,7 +37,7 @@ if ((toArray(_return) select 0) == (toArray(RETURN_GENERIC) select 0)) then { //
 			ERROR("Naught.Net CallExtension Wrapper", _message select 1);
 		};
 		case RETURN_TRUNCATED: {
-			_return = [parseNumber(_message select 1), parseNumber(_message select 2)] call COMMONFUNC(getTruncatedResult);
+			_return = [parseNumber(_message select 1), parseNumber(_message select 2)] call FUNC(getTruncatedResult);
 		};
 		case RETURN_HANDLE: {
 			_return = parseNumber(_message select 1);
