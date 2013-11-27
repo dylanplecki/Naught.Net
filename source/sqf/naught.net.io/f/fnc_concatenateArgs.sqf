@@ -25,7 +25,7 @@ ASSERT_PASSED_ARRAY;
 
 private ["_function", "_parameters", "_return"];
 _function		= _this select 0;
-_parameters		= PARAM_DEFAULT(1, []);
+_parameters		= PARAM_DEFAULT(1,[]);
 _return			= "";
 
 if ( !IS_TYPE(_parameters, "ARRAY") ) then {

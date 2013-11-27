@@ -103,13 +103,14 @@ namespace External
 				return Internal::Data::XML::NodeToSQF(doc);
 			} else {return Internal::ErrorMessage("XML source parsed with errors; aborted.");};
 		};
-
+		/*
 		string ParseYAML(vector<string> &params)
 		{
 			YAML::Node node = YAML::Load( params[0] );
 
 			return "";
 		};
+		*/
 	};
 
 	namespace Network

@@ -23,13 +23,17 @@ class Naught_Net
 	/* General Information */
 	name = "Naught.Net";
 	dir = "@Naught.Net";
-	version = 1.0.1.1;
 	author[] = {"Naught"};
 	authorUrl = "http://github.com/dylanplecki/Naught.Net";
 	
+	/* Versioning */
+	version = 1.1.0.1;
+	versionStr = "1.1.0.1";
+	versionAr[] = {1,1,0,1};
+	
 	/* Requirements */
 	requiredAddons[] = {};
-	requiredVersion = 1;
+	requiredVersion = 1.0;
 	
 	/* Includes */
 	units[] = {};

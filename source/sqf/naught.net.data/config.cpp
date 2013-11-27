@@ -18,15 +18,21 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script_component.hpp"
+class Naught_Net; // External Class Reference
 
 class CfgPatches {
-	class naught_net_data {
+	class Naught_Net_Data {
 		units[] = {};
 		requiredVersion = 1;
-		requiredAddons[] = {"naught_net_main", "naught_net_common"};
+		requiredAddons[] = {"Naught_Net_Main", "Naught_Net_Common"};
 		version = VERSION;
 		author[] = {"Naught"};
+	};
+};
+
+class CfgPatches {
+	class Naught_Net_IO : Naught_Net {
+		requiredAddons[] = {"Naught_Net_Main", "Naught_Net_Common", "Naught_Net_Strings"};
 	};
 };
 

@@ -25,7 +25,7 @@ class Naught_Net { // External Class Reference
 			class Delimiters {
 				function = "#";
 				parameter = "~";
-				message = "!#";
+				returnValue = "!";
 			};
 			class Messages {
 				error = "NAUGHT_NET_ERROR";
