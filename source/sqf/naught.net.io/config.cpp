@@ -23,9 +23,8 @@ class Naught_Net { // External Class Reference
 		class DllExtension {
 			dllName = "Naught.Net";
 			class Delimiters {
-				function = "#";
-				parameter = "~";
-				returnValue = "!";
+				input = "~";
+				output = "!";
 			};
 			class Messages {
 				error = "NAUGHT_NET_ERROR";
@@ -40,5 +39,12 @@ class Naught_Net { // External Class Reference
 class CfgPatches {
 	class Naught_Net_IO : Naught_Net {
 		requiredAddons[] = {"Naught_Net_Main", "Naught_Net_Common", "Naught_Net_Strings"};
+	};
+};
+class CfgFunctions {
+	class Naught_Net {
+		tag = "NDT";
+		init = "\x\Naught.Net\addons\naught.net.io\init.sqf";
+		
 	};
 };

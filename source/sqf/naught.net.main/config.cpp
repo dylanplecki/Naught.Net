@@ -51,6 +51,11 @@ class Naught_Net
 	
 	/* Registry: Static Definitions */
 	class Registry {};
+	
+	/* Functions */
+	class Functions {
+		tag = "NDT";
+	};
 };
 
 class CfgPatches {
@@ -59,4 +64,8 @@ class CfgPatches {
 
 class CfgMods {
 	class Naught_Net_Mod : Naught_Net {};
+};
+
+class CfgFunctions {
+	class Naught_Net_Functions : Naught_Net {};
 };

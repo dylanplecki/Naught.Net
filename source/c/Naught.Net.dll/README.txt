@@ -1,21 +1,48 @@
+========================================================================
+    DYNAMIC LINK LIBRARY : Naught.Net Project Overview
+========================================================================
 
-Naught.Net DLL (Dynamic Link Library).
+AppWizard has created this Naught.Net DLL for you.
 
-Copyright © 2013 Dylan Plecki <dylanplecki@gmail.com>
-All rights reserved.
+This file contains a summary of what you will find in each of the files that
+make up your Naught.Net application.
 
-Please read the LICENSE.txt file for important information.
 
-Project Link: http://forums.bistudio.com/showthread.php?166534-Naught-Net
+Naught.Net.vcxproj
+    This is the main project file for VC++ projects generated using an Application Wizard.
+    It contains information about the version of Visual C++ that generated the file, and
+    information about the platforms, configurations, and project features selected with the
+    Application Wizard.
 
-This code comes as-is, and omits some required dependencies due to size constraints.
-Thus this code cannot be compiled at its current state, or within the restraints of the license.
+Naught.Net.vcxproj.filters
+    This is the filters file for VC++ projects generated using an Application Wizard. 
+    It contains information about the association between the files in your project 
+    and the filters. This association is used in the IDE to show grouping of files with
+    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
+    "Source Files" filter).
 
-Compiled versions can be obtained either in the Debug and Release directories, or at the project web-link above.
-Code auditing (or run-time breakdown) of these compiled versions are allowed and welcome.
+Naught.Net.cpp
+    This is the main DLL source file.
 
-When using this code, the license outlined in the LICENSE.txt file must be adhered to at all times.
-This code has been provided for reference-only, and must solely be used under the accompanied license.
+	When created, this DLL does not export any symbols. As a result, it
+	will not produce a .lib file when it is built. If you wish this project
+	to be a project dependency of some other project, you will either need to
+	add code to export some symbols from the DLL so that an export library
+	will be produced, or you can set the Ignore Input Library property to Yes
+	on the General propert page of the Linker folder in the project's Property
+	Pages dialog box.
 
-This code is representative of a copy from a Microsoft Visual Studio 2012 Solution, and includes accompanying proprietary files.
-This code may not work in an environment outside of Microsoft Visual Studio 2012.
+/////////////////////////////////////////////////////////////////////////////
+Other standard files:
+
+StdAfx.h, StdAfx.cpp
+    These files are used to build a precompiled header (PCH) file
+    named Naught.Net.pch and a precompiled types file named StdAfx.obj.
+
+/////////////////////////////////////////////////////////////////////////////
+Other notes:
+
+AppWizard uses "TODO:" comments to indicate parts of the source code you
+should add to or customize.
+
+/////////////////////////////////////////////////////////////////////////////
