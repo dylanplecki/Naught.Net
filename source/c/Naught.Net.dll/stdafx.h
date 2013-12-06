@@ -18,7 +18,7 @@
 #include <functional>
 #include <chrono>
 //#include <thread>
-//#include <atomic>
+#include <atomic>
 #include <future>
 #include <string>
 #include <vector>
