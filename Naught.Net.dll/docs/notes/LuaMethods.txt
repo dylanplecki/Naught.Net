@@ -1,0 +1,38 @@
+/*****************************************************
+*	Default Methods
+*****************************************************/
+
+
+
+/*****************************************************
+*	RVE Interaction Object
+*
+*	Notes:
+*		- Conversions to primatives can be done.
+* 		- SQF variables are represented as strings.
+* 		- All SQF objects are variables.
+* 		- No script handles are returned.
+* 		- There will be no references, not even to arrays.
+*
+*	Data Types:
+*		- Number (SCALAR)
+*		- Boolean (BOOL)
+*		- Array (ARRAY)
+*		- Null (NIL)
+*		- String (STRING)
+*		- All other SQF data types are stored as strings.
+*****************************************************/
+
+string	= RVE.loadFile("directory");
+string	= RVE.preProcessFile("directory");
+string	= RVE.preProcessFileLineNumbers("directory");
+
+nil		= RVE.exec("directory");
+nil		= RVE.execVM("directory");
+nil		= RVE.execFSM("directory");
+
+any		= RVE.call("code");
+nil		= RVE.spawn("code");
+
+any		= RVE.getVariable("namespace", "variable");
+nil		= RVE.setVariable("namespace", "variable", "value");
