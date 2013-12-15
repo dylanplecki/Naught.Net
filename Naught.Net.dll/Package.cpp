@@ -12,3 +12,35 @@
 #include "Package.h"
 
 
+Package::Package(std::string& pAddress, std::string& pContents) : address(pAddress), contents(pContents) {};
+
+Package::~Package(void) {};
+
+std::string Package::getAddress()
+{
+	return this->address; // Won't change after class constructor, no need to protect
+};
+
+std::string Package::get(size_t& size)
+{
+	std::lock_guard<std::mutex>(this->lk);
+	size_t start = this->outputCounter;
+	this->outputCounter += size;
+	return this->contents.substr(start, this->outputCounter);
+};
+
+bool Package::gotAll()
+{
+	return (this->outputCounter >= contents.size());
+};
+
+std::string& Package::open()
+{
+	this->lk.lock();
+	return this->contents;
+};
+
+void Package::close()
+{
+	this->lk.unlock();
+};

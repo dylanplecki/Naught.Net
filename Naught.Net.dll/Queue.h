@@ -16,8 +16,9 @@ class Queue
 {
 private:
 	std::mutex lock;
-	std::vector<T> queue;
+	std::queue<T> queue;
 public:
+	size_t size();
 	T next();
-	void add(T);
+	void add(T& entity);
 };

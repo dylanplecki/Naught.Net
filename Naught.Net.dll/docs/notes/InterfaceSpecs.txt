@@ -1,0 +1,8 @@
+
+Cross-program communication will occur using a packet-like interface, with each packet consisting of these parameters:
+
+Bytes	|	Segment Name
+--------+------------------------------
+1		| 	Expect Return Packet (bool)
+16		|	Address (string)
+~		|	Content

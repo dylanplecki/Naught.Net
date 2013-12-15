@@ -1,0 +1,67 @@
+############################################################
+# +------------------------------------------------------+ #
+# |            Naught.Net Configuration File             | #
+# +------------------------------------------------------+ #
+############################################################
+
+# This file is used to configure settings internal to the Naught.Net extension (Naught.Net.dll).
+# These settings are loaded on the start of a new Arma mission.
+# These settings do not affect Arma in any way.
+
+# Essential YAML Knowledge:
+#   - No tabs are present: YAML only allows spaces.
+#   - Indents are correct: YAML hierarchy is based entirely on indentation.
+#   - You have "escaped" all apostrophes in your text: If you want to write "don't", for example, write "don''t" instead (note the doubled apostrophe).
+#   - Text with symbols is enclosed in single or double quotation marks.
+# For more information on YAML, visit <http://en.wikipedia.org/wiki/YAML>.
+
+############################################################
+# +------------------------------------------------------+ #
+# |                      Threading                       | #
+# +------------------------------------------------------+ #
+############################################################
+
+# [INT] Maximum amount of threads that the extension may run. Any overages will be added to a thread queue.
+max-threads: 10
+
+# [INT] Number of seconds that a thread may run for, afterwards it is "killed" and set to the lowest priority.
+thread-timeout: 300
+
+############################################################
+# +------------------------------------------------------+ #
+# |                       Network                        | #
+# +------------------------------------------------------+ #
+############################################################
+
+# [INT] Number of seconds that a connection may be open for, afterwards it is closed and the current data is sent.
+connection-timeout: 150
+
+# [INT] Maximum amount of bytes that a connection may download.
+max-download: 1048576
+
+# [INT] Maximum amount of bytes that a connection may upload.
+max-upload: 524288
+
+# [INT] Maximum amount of bytes that a connection may save to memory. Should be the same as max-download.
+max-write: 1048576
+
+############################################################
+# +------------------------------------------------------+ #
+# |                       Internal                       | #
+# +------------------------------------------------------+ #
+############################################################
+
+# NOTE: YOU SHOULD NOT HAVE TO CHANGE THESE VALUES!
+# These settings are for experienced users ONLY.
+
+# [STRING ARRAY] Extension communication delimiters.
+delimiters:
+    function: "#"
+    parameter: "~"
+
+# [STRING ARRAY] Extension communication return codes.
+return-codes:
+    error: "#!NAUGHT_NET_ERROR"
+    truncated: "#!NAUGHT_NET_TRUNC"
+    handle: "#!NAUGHT_NET_HANDL"
+    null: "#!NAUGHT_NET__NULL"

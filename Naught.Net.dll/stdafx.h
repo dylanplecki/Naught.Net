@@ -19,17 +19,20 @@
 
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
-#define WORKER_IDLE_MIN 1 // Minimum number of idle workers.
-#define WORKER_ALL_MAX 10 // Maximum number of active and idle workers.
-#define WORKER_IDLE_TIMEOUT 300000 // Worker idle timeout in milliseconds, <= 0 for infinite.
-#define WORKER_MAX_OPERATIONS 512 // Maximum number of operations a worker may perform before being destroyed (prevents memory leaks).
+/* Internal Addresses */
 
-#define PKG_ACCESS_TIMEOUT 0 // Default package access mutex lock timeout in milliseconds, <= 0 for infinite.
+#define ADDRESS_GET_NEW "____GET__NEW____"
 
-#define RVE_INTERFACE_DELIM "~" // RVE parameter delimiter for communication.
-#define RVE_OUTPUT_ERROR "NAUGHT_NET_ERROR" // Output error message.
-#define RVE_OUTPUT_END "NAUGHT_NET___EOO" // End of output or return.
-#define RVE_OUTPUT_NULL "NAUGHT_NET__NULL" // Return nothing/null.
+/* Exeception Definitions */
+
+#define INTERFACE_RET_NULL "NAUGHT_NET__NULL"
+#define INTERFACE_RET_ERROR "NAUGHT_NET_ERROR"
+
+/* Packet Interface Definitions */
+
+#define PACKET_LEN_RET 1
+#define PACKET_LEN_ADR 16
+#define PACKET_LEN_EXP 16
 
 /* Includes */
 
@@ -49,10 +52,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
+#include <queue>
 //#include <regex>
 
 #include <boost\algorithm\string.hpp>
 #include <boost\lexical_cast.hpp>
+#include <boost\tokenizer.hpp>
 
 #include "lua.hpp"
 
@@ -82,3 +88,9 @@
 
 #pragma comment(lib,"libyaml-cppmd.lib")
 */
+
+/* And a Global Error Functions */
+std::string ERRORMSG(std::string message = "")
+{
+	return (INTERFACE_RET_ERROR + message);
+};

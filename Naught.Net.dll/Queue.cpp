@@ -12,3 +12,25 @@
 #include "Queue.h"
 
 
+template<class T>
+size_t Queue<T>::size()
+{
+	std::lock_guard<std::mutex> lk(this->lock);
+	return this->queue.size();
+};
+
+template<class T>
+T Queue<T>::next()
+{
+	std::lock_guard<std::mutex> lk(this->lock);
+	T nextVal = this->queue.front();
+	this->queue.pop();
+	return nextVal;
+};
+
+template<class T>
+void Queue<T>::add(T& entity)
+{
+	std::lock_guard<std::mutex> lk(this->lock);
+	this->queue.push(entity);
+};

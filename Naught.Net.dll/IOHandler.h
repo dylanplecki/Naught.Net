@@ -10,17 +10,15 @@
 
 #pragma once
 
-class Scheduler;
-class Package;
-
 class IOHandler
 {
 private:
-	std::map<std::string,Scheduler*> instances;
+	std::mutex extIO;
 	Queue<Package*> outputQueue;
-	Scheduler* getInstance(std::string& name);
-	void deleteInstance(std::string& name);
+	std::vector<Scheduler*> schedulers;
+	std::unordered_map<std::string,Package*> pkgHandling;
+	std::string newPacket(bool reqReturn, std::string& addr, std::string& contents);
 public:
-	std::string input(Package* pkg);
-	void output(Package* pkg);
+	std::string receive(std::string& packet, size_t& outputSize); // Input from SQF
+	void queue(Package* pkg); // Output from internal schedulers
 };

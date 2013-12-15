@@ -20,10 +20,12 @@ private:
 	std::condition_variable waiting;
 	Queue<Package*> pkgQueue;
 	Queue<Worker*> workerQueue;
+	std::unordered_map<std::string,Worker*> addressBook;
 	void process();
 public:
 	Scheduler(void);
 	~Scheduler(void);
-	void add(Package* pkg);
+	bool search(std::string& addr);
+	void send(Package* pkg);
 	void ask(Worker* worker);
 };

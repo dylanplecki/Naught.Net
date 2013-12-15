@@ -84,7 +84,6 @@
     <ClInclude Include="IOHandler.h" />
     <ClInclude Include="lua.hpp" />
     <ClInclude Include="Package.h" />
-    <ClInclude Include="Packager.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scheduler.h" />
@@ -103,7 +102,6 @@
     </ClCompile>
     <ClCompile Include="IOHandler.cpp" />
     <ClCompile Include="Package.cpp" />
-    <ClCompile Include="Packager.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -117,7 +115,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Naught.Net.dll.licenseheader" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\lua.redist.5.2.2.13\build\native\lua.redist.targets" Condition="Exists('packages\lua.redist.5.2.2.13\build\native\lua.redist.targets')" />
+    <Import Project="packages\lua.5.2.2.13\build\native\lua.targets" Condition="Exists('packages\lua.5.2.2.13\build\native\lua.targets')" />
+  </ImportGroup>
 </Project>

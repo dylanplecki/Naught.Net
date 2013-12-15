@@ -14,17 +14,16 @@
 class Package
 {
 private:
-	uint32_t handle;
-	static uint32_t handleCounter;
-	std::mutex lock;
-	std::string instance;
+	std::mutex lk;
+	std::string address; // Unique value
 	std::string contents;
 	size_t outputCounter;
 public:
-	Package(std::string& instance, std::string& contents);
+	Package(std::string& pAddress, std::string& pContents);
 	~Package(void);
-	std::string instance();
-	std::string get();
+	std::string getAddress();
+	std::string get(size_t& size);
+	bool gotAll();
 	std::string& open();
 	void close();
 };
