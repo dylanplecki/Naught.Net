@@ -19,6 +19,9 @@
 
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
+#define WORKER_MIN 1
+#define WORKER_MAX 50
+
 /* Internal Addresses */
 
 #define ADDRESS_GET_NEW "____GET__NEW____"
@@ -58,9 +61,13 @@
 
 #include <boost\algorithm\string.hpp>
 #include <boost\lexical_cast.hpp>
-#include <boost\tokenizer.hpp>
+//#include <boost\tokenizer.hpp>
 
 #include "lua.hpp"
+
+#include "tbb\concurrent_queue.h"
+#include "tbb\concurrent_hash_map.h"
+#include "tbb\enumerable_thread_specific.h"
 
 /*
 #include <curl.h>

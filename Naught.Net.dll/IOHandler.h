@@ -14,11 +14,11 @@ class IOHandler
 {
 private:
 	std::mutex extIO;
-	Queue<Package*> outputQueue;
-	std::vector<Scheduler*> schedulers;
-	std::unordered_map<std::string,Package*> pkgHandling;
+	Queue<LuaPackage*> outputQueue;
+	std::vector<LuaScheduler*> schedulers;
+	std::unordered_map<std::string,LuaPackage*> pkgHandling;
 	std::string newPacket(bool reqReturn, std::string& addr, std::string& contents);
 public:
 	std::string receive(std::string& packet, size_t& outputSize); // Input from SQF
-	void queue(Package* pkg); // Output from internal schedulers
+	void queue(LuaPackage* pkg); // Output from internal schedulers
 };

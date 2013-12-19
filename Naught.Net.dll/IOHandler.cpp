@@ -9,9 +9,8 @@
 */
 
 #include "stdafx.h"
-#include "Package.h"
-#include "Queue.h"
-#include "Scheduler.h"
+#include "LuaPackage.h"
+#include "LuaScheduler.h"
 #include "IOHandler.h"
 
 std::string IOHandler::newPacket(bool reqReturn, std::string& addr, std::string& contents)
@@ -30,15 +29,17 @@ std::string IOHandler::receive(std::string& packet, size_t& outputSize) // Calle
 	std::string targetAddress = packet.substr(PACKET_LEN_RET, PACKET_LEN_ADR);
 	if (returnPacket) // Return scheduled output
 	{
-		Package* pkg = nullptr;
+		LuaPackage* pkg = nullptr;
 		if (targetAddress == ADDRESS_GET_NEW)
 		{
+			this->outputQueue.lock();
 			if (this->outputQueue.size() > 0)
 			{
 				pkg = this->outputQueue.next();
 				targetAddress = pkg->getAddress();
 				pkgHandling[targetAddress] = pkg;
 			};
+			this->outputQueue.unlock();
 		}
 		else // Find packet in current handling stack
 		{
@@ -61,8 +62,8 @@ std::string IOHandler::receive(std::string& packet, size_t& outputSize) // Calle
 	{
 		if (schedulers.size() > 0)
 		{
-			Scheduler* sched = schedulers.back();
-			Package* pkg = new Package(targetAddress, packet.substr((PACKET_LEN_RET + PACKET_LEN_ADR), std::string::npos));
+			LuaScheduler* sched = schedulers.back();
+			LuaPackage* pkg = new LuaPackage(targetAddress, packet.substr((PACKET_LEN_RET + PACKET_LEN_ADR), std::string::npos));
 			for (auto &scheduler : this->schedulers)
 			{
 				if (scheduler->search(targetAddress)) // Send to thread
@@ -71,13 +72,15 @@ std::string IOHandler::receive(std::string& packet, size_t& outputSize) // Calle
 					break;
 				};
 			};
-			sched->send(pkg);
+			sched->transfer(pkg);
 		} else {packetContent = ERRORMSG("No scheduler found.");};
 	};
 	return this->newPacket(expectReturn, targetAddress, packetContent);
 };
 
-void IOHandler::queue(Package* pkg) // Called from internal threaded workers
+void IOHandler::queue(LuaPackage* pkg) // Called from internal scheduler
 {
+	this->outputQueue.lock();
 	this->outputQueue.add(pkg);
+	this->outputQueue.unlock();
 };

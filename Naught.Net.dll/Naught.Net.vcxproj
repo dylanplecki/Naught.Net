@@ -41,11 +41,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);D:\c\boost\1_54_0;$(IncludePath)</IncludePath>
+    <IncludePath>D:\c\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);D:\c\boost\1_54_0;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\c\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);D:\c\boost\1_54_0;$(IncludePath)</IncludePath>
+    <IncludePath>D:\c\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);D:\c\boost\1_54_0;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\c\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -83,13 +85,12 @@
   <ItemGroup>
     <ClInclude Include="IOHandler.h" />
     <ClInclude Include="lua.hpp" />
-    <ClInclude Include="Package.h" />
-    <ClInclude Include="Queue.h" />
+    <ClInclude Include="LuaAPI.h" />
+    <ClInclude Include="LuaPackage.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Scheduler.h" />
+    <ClInclude Include="LuaScheduler.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="version.h" />
-    <ClInclude Include="Worker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -101,14 +102,13 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="IOHandler.cpp" />
-    <ClCompile Include="Package.cpp" />
-    <ClCompile Include="Queue.cpp" />
-    <ClCompile Include="Scheduler.cpp" />
+    <ClCompile Include="LuaAPI.cpp" />
+    <ClCompile Include="LuaPackage.cpp" />
+    <ClCompile Include="LuaScheduler.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="version.rc" />
