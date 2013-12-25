@@ -9,34 +9,48 @@
 */
 
 #include "stdafx.h"
-#include "IOHandler.h"
 #include "LuaPackage.h"
 #include "LuaScheduler.h"
+#include "IOHandler.h"
 
 
-LuaScheduler::LuaScheduler(void) {};
+LuaScheduler::LuaScheduler() {};
 
-LuaScheduler::~LuaScheduler(void) {};
+LuaScheduler::~LuaScheduler() {};
 
-void LuaScheduler::newThread(LuaPackage* pkg)
+void LuaScheduler::newThread()
 {
 	++activeTCount;
-	new std::thread(threadProcess, this, pkg);
+	//new std::thread(&LuaScheduler::threadProcess, this);
 };
 
 LuaPackage* LuaScheduler::requestNew()
 {
 	LuaPackage* newPkg = nullptr;
-	std::unique_lock<std::mutex> lk(idleThread, std::defer_lock);
-	threadQueue.wait_for(lk, std::chrono::milliseconds(THREAD_TIMEOUT), [this, &newPkg]() {
-		execQueue.try_pop(newPkg);
-	});
+	while (newPkg == nullptr)
+	{
+		if (!execQueue.try_pop(newPkg))
+		{
+			std::unique_lock<std::mutex> lk(idleThread, std::defer_lock);
+			++idleTCount;
+			threadQueue.wait_for(lk, std::chrono::milliseconds(THREAD_TIMEOUT), [this, &newPkg] {
+				return execQueue.try_pop(newPkg);
+			});
+			--idleTCount;
+		};
+		if (newPkg->execLock < std::chrono::steady_clock::now())
+		{
+			queuePackage(newPkg);
+			newPkg = nullptr;
+			std::this_thread::yield();
+		};
+	};
 	return newPkg;
 };
 
-void LuaScheduler::threadProcess(LuaScheduler* scheduler, LuaPackage* pkg)
+void LuaScheduler::threadProcess(LuaScheduler* scheduler)
 {
-	bool run = true;
+	LuaPackage* pkg = requestNew();
 	while (pkg != nullptr)
 	{
 		/* Execute Lua Code */
@@ -45,13 +59,14 @@ void LuaScheduler::threadProcess(LuaScheduler* scheduler, LuaPackage* pkg)
 		do {
 			pkg->open();
 			L = pkg->getThread();
-			stat = lua_resume(L, NULL, 0);
+			stat = lua_resume(L, NULL, pkg->luaArgCount());
 			if (stat == LUA_YIELD)
 			{
 				pkg->close();
-				if (lua_tostring(L, -1) == "SQF_BREAK")
+				std::string res = lua_tostring(L, -1);
+				lua_settop (L, 0); // Remove all elements from stack
+				if (res == "SQF_BREAK")
 				{
-					lua_pop(L, 1);
 					pkg = toss(pkg);
 				}
 				else
@@ -64,13 +79,10 @@ void LuaScheduler::threadProcess(LuaScheduler* scheduler, LuaPackage* pkg)
 		if (pkg != nullptr) // Finish execution
 		{
 			std::string& res = pkg->edit();
-			if (stat == 0)
+			res = lua_tostring(L, -1);
+			if (stat != 0)
 			{
-				res = lua_tostring(L, -1);
-			}
-			else
-			{
-				res = ERRORMSG(lua_tostring(L, -1));
+				pkg->setFlag(PKG_FLAG_ERROR);
 			};
 			pkg->close();
 			pkg = scheduler->finish(pkg);
@@ -79,9 +91,30 @@ void LuaScheduler::threadProcess(LuaScheduler* scheduler, LuaPackage* pkg)
 	scheduler->threadExit();
 };
 
+bool LuaScheduler::search(std::string& ident, std::string& data)
+{
+	tbb::concurrent_hash_map<std::string,LuaPackage*>::const_accessor acc;
+	if (waitingRoom.find(acc, ident))
+	{
+		LuaPackage* pkg = acc->second;
+		waitingRoom.erase(acc);
+		pkg->open();
+		lua_pushstring(pkg->getThread(), data.c_str());
+		pkg->luaArgCount(1);
+		pkg->close();
+		queuePackage(pkg);
+		return true;
+	} else {return false;};
+};
+
 void LuaScheduler::queuePackage(LuaPackage* pkg)
 {
 	execQueue.push(pkg);
+	if ((idleTCount <= 0) && (activeTCount < MAX_THREADS))
+	{
+		newThread();
+	};
+	threadQueue.notify_one();
 };
 
 LuaPackage* LuaScheduler::yield(LuaPackage* pkg)
@@ -100,7 +133,7 @@ LuaPackage* LuaScheduler::finish(LuaPackage* pkg)
 {
 	lua_close(pkg->getEnv());
 	delete pkg->getEnv();
-	// TODO: Send finished package to IOHandler
+	IOHandler::instance()->queueOutput(pkg);
 	return requestNew();
 };
 

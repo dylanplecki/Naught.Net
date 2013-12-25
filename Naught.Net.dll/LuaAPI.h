@@ -5,6 +5,7 @@ class LuaAPI
 {
 private:
 	static LuaAPI *s_instance;
+	int setPackagePath(lua_State* L, std::string pType, std::string path);
 public:
 	lua_State* initState();
 	lua_State* initThread(lua_State* state, std::string& src);

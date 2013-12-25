@@ -13,74 +13,95 @@
 #include "LuaScheduler.h"
 #include "IOHandler.h"
 
-std::string IOHandler::newPacket(bool reqReturn, std::string& addr, std::string& contents)
+
+IOHandler *IOHandler::s_instance = 0;
+
+std::string IOHandler::newPacket(int pFlag, std::string& addr, std::string& contents)
 {
-	char expectReturn;
-	if (reqReturn) {expectReturn = '1';} else {expectReturn = '0';};
-	return (expectReturn + addr + contents);
+	return (boost::lexical_cast<std::string,int>(pFlag) + addr + contents);
 };
 
-std::string IOHandler::receive(std::string& packet, size_t& outputSize) // Called from SQF
+std::string IOHandler::receiveInput(std::string& packet, size_t& outputSize) // Called from SQF
 {
-	std::lock_guard<std::mutex> lk(this->extIO); // Only 1 IO handler instance may run at a time
-	bool expectReturn = false;
-	std::string packetContent = INTERFACE_RET_NULL;
-	bool returnPacket = boost::lexical_cast<bool,std::string>(packet.substr(0, PACKET_LEN_RET));
-	std::string targetAddress = packet.substr(PACKET_LEN_RET, PACKET_LEN_ADR);
-	if (returnPacket) // Return scheduled output
+	int packetFlag = boost::lexical_cast<int,std::string>(packet.substr(0, PACKET_LEN_RET));
+	std::string targetIdentity = packet.substr(PACKET_LEN_RET, PACKET_LEN_ADR);
+	std::string packetContent = packet.substr((PACKET_LEN_RET + PACKET_LEN_ADR), std::string::npos);
+
+	int newPacketFlag = P_FLAG_NULL;
+	std::string newPacketIdentity = targetIdentity;
+	std::string newPacketContent;
+
+	LuaPackage* pkg = nullptr;
+
+	switch(packetFlag)
 	{
-		LuaPackage* pkg = nullptr;
-		if (targetAddress == ADDRESS_GET_NEW)
+	case P_FLAG_PROCESS_CODE:
+		if (schedulers.size() > 0)
 		{
-			this->outputQueue.lock();
-			if (this->outputQueue.size() > 0)
-			{
-				pkg = this->outputQueue.next();
-				targetAddress = pkg->getAddress();
-				pkgHandling[targetAddress] = pkg;
-			};
-			this->outputQueue.unlock();
+			schedulers.back()->queuePackage(new LuaPackage(targetIdentity, packetContent));
 		}
-		else // Find packet in current handling stack
+		else
 		{
-			if (this->pkgHandling.count(targetAddress))
+			newPacketFlag = P_FLAG_ERROR;
+			newPacketContent = "No schedulers available for new instance.";
+		};
+		break;
+	case P_FLAG_NEW_SCHEDULER:
+		delete schedulers.front();
+		schedulers.push_back(new LuaScheduler);
+		break;
+	case P_FLAG_REQUEST_OUTPUT:
+		if (pkgHandling.count(targetIdentity))
+		{
+			pkg = pkgHandling[targetIdentity];
+		}
+		else
+		{
+			if (outputQueue.try_pop(pkg))
 			{
-				pkg = pkgHandling[targetAddress];
+				newPacketIdentity = pkg->getIdentity();
 			};
 		};
 		if (pkg != nullptr)
 		{
-			packetContent = pkg->get(outputSize);
-			if (pkg->gotAll()) // Then remove all pkg instances
+			newPacketContent = pkg->take(outputSize);
+			if (pkg->isEmpty())
 			{
-				pkgHandling.erase(targetAddress);
-				delete pkg;
-			} else {expectReturn = true;};
-		};
-	}
-	else // Send to scheduler
-	{
-		if (schedulers.size() > 0)
-		{
-			LuaScheduler* sched = schedulers.back();
-			LuaPackage* pkg = new LuaPackage(targetAddress, packet.substr((PACKET_LEN_RET + PACKET_LEN_ADR), std::string::npos));
-			for (auto &scheduler : this->schedulers)
-			{
-				if (scheduler->search(targetAddress)) // Send to thread
+				switch (pkg->getFlag())
 				{
-					sched = scheduler;
+				case PKG_FLAG_ERROR:
+					newPacketFlag = P_FLAG_ERROR;
+					break;
+				case PKG_FLAG_CODE:
+					newPacketFlag = P_FLAG_PROCESS_CODE;
 					break;
 				};
+				delete pkg;
+			} else {newPacketFlag = P_FLAG_CONTINUE;};
+		};
+		break;
+	case P_FLAG_SEND_TO_INSTANCE:
+		bool found = false;
+		for (auto scheduler : schedulers)
+		{
+			if (scheduler->search(targetIdentity, packetContent))
+			{
+				found = true;
+				break;
 			};
-			sched->transfer(pkg);
-		} else {packetContent = ERRORMSG("No scheduler found.");};
+		};
+		if (!found)
+		{
+			newPacketFlag = P_FLAG_ERROR;
+			newPacketContent = "No matching instance found in current schedulers.";
+		};
+		break;
 	};
-	return this->newPacket(expectReturn, targetAddress, packetContent);
+
+	return newPacket(newPacketFlag, newPacketIdentity, newPacketContent);
 };
 
-void IOHandler::queue(LuaPackage* pkg) // Called from internal scheduler
+void IOHandler::queueOutput(LuaPackage* pkg) // Called from internal scheduler
 {
-	this->outputQueue.lock();
-	this->outputQueue.add(pkg);
-	this->outputQueue.unlock();
+	outputQueue.push(pkg);
 };

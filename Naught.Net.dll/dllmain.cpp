@@ -9,6 +9,9 @@
 */
 
 #include "stdafx.h"
+#include "LuaPackage.h"
+#include "LuaScheduler.h"
+#include "IOHandler.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {

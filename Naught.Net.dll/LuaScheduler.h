@@ -23,17 +23,18 @@ class LuaScheduler
 {
 private:
 	std::mutex idleThread;
+	std::atomic<size_t> idleTCount;
 	std::atomic<size_t> activeTCount;
 	std::condition_variable threadQueue;
 	tbb::concurrent_queue<LuaPackage*> execQueue;
 	tbb::concurrent_hash_map<std::string,LuaPackage*> waitingRoom;
-	void newThread(LuaPackage* pkg);
+	void newThread();
 	LuaPackage* requestNew();
 protected:
-	void threadProcess(LuaScheduler* scheduler, LuaPackage* pkg);
+	void threadProcess(LuaScheduler* scheduler);
 public:
-	LuaScheduler(void);
-	~LuaScheduler(void);
+	LuaScheduler();
+	~LuaScheduler();
 	bool search(std::string& ident, std::string& data);
 	void queuePackage(LuaPackage* pkg);
 	// Internal Threading Library

@@ -13,9 +13,9 @@
 #include "LuaPackage.h"
 
 
-LuaPackage::LuaPackage(std::string ident, std::string code) : identity(ident), sourceCode(code), env(nullptr), thread(nullptr) {};
+LuaPackage::LuaPackage(std::string ident, std::string code) : identity(ident), sourceCode(code), env(nullptr), thread(nullptr), luaArgs(0), pkgFlag(PKG_FLAG_NORMAL) {};
 
-LuaPackage::~LuaPackage(void) {};
+LuaPackage::~LuaPackage() {};
 
 lua_State* LuaPackage::getEnv()
 {
@@ -64,14 +64,26 @@ std::string& LuaPackage::edit()
 	return result;
 };
 
-const std::string& LuaPackage::take(size_t& amount)
+const std::string LuaPackage::take(size_t& amount)
 {
-	size_t start = this->outputCounter;
-	this->outputCounter += amount;
-	return this->result.substr(start, this->outputCounter);
+	size_t start = outputCounter;
+	outputCounter += amount;
+	return result.substr(start, outputCounter);
 };
 
 bool LuaPackage::isEmpty()
 {
 	return (outputCounter >= result.length());
+};
+
+size_t LuaPackage::luaArgCount()
+{
+	size_t args = luaArgs;
+	luaArgs = 0;
+	return args;
+};
+
+void LuaPackage::luaArgCount(size_t count)
+{
+	luaArgs += count;
 };

@@ -19,24 +19,6 @@
 
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
-#define WORKER_MIN 1
-#define WORKER_MAX 50
-
-/* Internal Addresses */
-
-#define ADDRESS_GET_NEW "____GET__NEW____"
-
-/* Exeception Definitions */
-
-#define INTERFACE_RET_NULL "NAUGHT_NET__NULL"
-#define INTERFACE_RET_ERROR "NAUGHT_NET_ERROR"
-
-/* Packet Interface Definitions */
-
-#define PACKET_LEN_RET 1
-#define PACKET_LEN_ADR 16
-#define PACKET_LEN_EXP 16
-
 /* Includes */
 
 #include "version.h"
@@ -49,17 +31,18 @@
 //#include <fstream>
 #include <functional>
 #include <chrono>
-//#include <thread>
+#include <mutex>
+#include <thread>
 #include <atomic>
 #include <future>
 #include <string>
 #include <vector>
-#include <map>
+//#include <map>
 #include <unordered_map>
-#include <queue>
+//#include <queue>
 //#include <regex>
 
-#include <boost\algorithm\string.hpp>
+//#include <boost\algorithm\string.hpp>
 #include <boost\lexical_cast.hpp>
 //#include <boost\tokenizer.hpp>
 
@@ -96,8 +79,12 @@
 #pragma comment(lib,"libyaml-cppmd.lib")
 */
 
-/* And a Global Error Functions */
-std::string ERRORMSG(std::string message = "")
+static std::string getCurDir()
 {
-	return (INTERFACE_RET_ERROR + message);
+	char path[MAX_PATH];
+	HMODULE hm = NULL;
+	GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) &getCurDir, &hm);
+	GetModuleFileNameA(hm, path, sizeof(path));
+	std::string ret = path;
+	return ret.substr(0, ret.find_last_of('\\'));
 };
