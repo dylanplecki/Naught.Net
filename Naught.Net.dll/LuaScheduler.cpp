@@ -21,7 +21,7 @@ LuaScheduler::~LuaScheduler() {};
 void LuaScheduler::newThread()
 {
 	++activeTCount;
-	//new std::thread(&LuaScheduler::threadProcess, this);
+	new std::thread(&LuaScheduler::threadProcess, this); // TODO: Fix threading (big)
 };
 
 LuaPackage* LuaScheduler::requestNew()
@@ -63,6 +63,7 @@ void LuaScheduler::threadProcess(LuaScheduler* scheduler)
 			if (stat == LUA_YIELD)
 			{
 				pkg->close();
+				/* TODO: Finish system for inter-thread LUA communication */
 				std::string res = lua_tostring(L, -1);
 				lua_settop (L, 0); // Remove all elements from stack
 				if (res == "SQF_BREAK")
@@ -73,6 +74,7 @@ void LuaScheduler::threadProcess(LuaScheduler* scheduler)
 				{
 					pkg = yield(pkg);
 				};
+				/* END TODO */
 			};
 		} while ((pkg != nullptr) && (stat == LUA_YIELD));
 
