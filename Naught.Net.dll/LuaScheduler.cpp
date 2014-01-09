@@ -16,12 +16,14 @@
 
 LuaScheduler::LuaScheduler() {};
 
-LuaScheduler::~LuaScheduler() {};
+LuaScheduler::~LuaScheduler() {
+	// TODO
+};
 
 void LuaScheduler::newThread()
 {
 	++activeTCount;
-	new std::thread(&LuaScheduler::threadProcess, this); // TODO: Fix threading (big)
+	new std::thread(&LuaScheduler::threadProcess, this);
 };
 
 LuaPackage* LuaScheduler::requestNew()
@@ -48,7 +50,7 @@ LuaPackage* LuaScheduler::requestNew()
 	return newPkg;
 };
 
-void LuaScheduler::threadProcess(LuaScheduler* scheduler)
+void LuaScheduler::threadProcess()
 {
 	LuaPackage* pkg = requestNew();
 	while (pkg != nullptr)
@@ -87,10 +89,10 @@ void LuaScheduler::threadProcess(LuaScheduler* scheduler)
 				pkg->setFlag(PKG_FLAG_ERROR);
 			};
 			pkg->close();
-			pkg = scheduler->finish(pkg);
+			pkg = this->finish(pkg);
 		};
 	};
-	scheduler->threadExit();
+	this->threadExit();
 };
 
 bool LuaScheduler::search(std::string& ident, std::string& data)
@@ -133,7 +135,9 @@ LuaPackage* LuaScheduler::toss(LuaPackage* pkg)
 
 LuaPackage* LuaScheduler::finish(LuaPackage* pkg)
 {
+	lua_close(pkg->getThread());
 	lua_close(pkg->getEnv());
+	delete pkg->getThread();
 	delete pkg->getEnv();
 	IOHandler::instance()->queueOutput(pkg);
 	return requestNew();

@@ -19,6 +19,7 @@
 		To receive input packages and process them with
 		a unique and parallel Lua environment.
 */
+
 class LuaScheduler
 {
 private:
@@ -31,7 +32,7 @@ private:
 	void newThread();
 	LuaPackage* requestNew();
 protected:
-	void threadProcess(LuaScheduler* scheduler);
+	void threadProcess();
 public:
 	LuaScheduler();
 	~LuaScheduler();

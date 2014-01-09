@@ -21,7 +21,7 @@ std::string IOHandler::newPacket(int pFlag, std::string& addr, std::string& cont
 	return (boost::lexical_cast<std::string,int>(pFlag) + addr + contents);
 };
 
-std::string IOHandler::receiveInput(std::string& packet, size_t& outputSize) // Called from SQF
+std::string IOHandler::receiveInput(const std::string& packet, size_t outputSize) // Called from SQF
 {
 	int packetFlag = boost::lexical_cast<int,std::string>(packet.substr(0, PACKET_LEN_RET));
 	std::string targetIdentity = packet.substr(PACKET_LEN_RET, PACKET_LEN_ADR);
@@ -48,7 +48,7 @@ std::string IOHandler::receiveInput(std::string& packet, size_t& outputSize) // 
 		break;
 	case P_FLAG_NEW_SCHEDULER:
 		delete schedulers.front();
-		schedulers.push_back(new LuaScheduler);
+		schedulers.push_back(new LuaScheduler());
 		break;
 	case P_FLAG_REQUEST_OUTPUT:
 		if (pkgHandling.count(targetIdentity))

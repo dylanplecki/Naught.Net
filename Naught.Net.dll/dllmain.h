@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<!--
+/*
 	Program: Naught.Net Dynamic Link Library (DLL)
 	Author: Dylan Plecki <dylanplecki@gmail.com>
 	License:
@@ -8,9 +6,9 @@
 		This work is licensed under the Microsoft Reference Source License (MS-RSL).
 		Please reference the LICENSE.txt file included with this program for more information,
 		Or visit <http://referencesource.microsoft.com/referencesourcelicense.aspx> for a copy.
--->
+*/
 
-<packages>
-  <package id="lua" version="5.2.2.13" targetFramework="Native" />
-  <package id="lua.redist" version="5.2.2.13" targetFramework="Native" />
-</packages>
+#pragma once
+
+std::string getCurDir();
+std::wstring s2ws(const std::string& s);

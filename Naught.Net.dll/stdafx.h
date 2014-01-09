@@ -78,13 +78,3 @@
 
 #pragma comment(lib,"libyaml-cppmd.lib")
 */
-
-static std::string getCurDir()
-{
-	char path[MAX_PATH];
-	HMODULE hm = NULL;
-	GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) &getCurDir, &hm);
-	GetModuleFileNameA(hm, path, sizeof(path));
-	std::string ret = path;
-	return ret.substr(0, ret.find_last_of('\\'));
-};

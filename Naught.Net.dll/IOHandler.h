@@ -35,7 +35,7 @@ private:
 	std::unordered_map<std::string,LuaPackage*> pkgHandling;
 	std::string newPacket(int pFlag, std::string& addr, std::string& contents);
 public:
-	std::string receiveInput(std::string& packet, size_t& outputSize); // Input from SQF
+	std::string receiveInput(const std::string& packet, size_t outputSize); // Input from SQF
 	void queueOutput(LuaPackage* pkg); // Output from internal schedulers
 
 	/* Singleton Function */
