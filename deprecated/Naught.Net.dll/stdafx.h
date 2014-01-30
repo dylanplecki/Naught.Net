@@ -78,3 +78,7 @@
 
 #pragma comment(lib,"libyaml-cppmd.lib")
 */
+
+#pragma comment(lib,"tbb.lib")
+#pragma comment(lib,"liblua-static.lib")
+#pragma comment(lib,"luac-static.lib")

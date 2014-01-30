@@ -23,7 +23,7 @@ class Naught_Net
 	/* Display */
 	hideName = "false";
 	hidePicture = "false";
-	picture = "\x\Naught.Net\addons\naught.net.main\rsc\images\Naught_Net.png";
+	picture = "\naught.net.main\rsc\images\Naught_Net.png";
 	
 	/* Extra */
 	actionName = "Website";
@@ -31,17 +31,14 @@ class Naught_Net
 	description = "Issues: http://github.com/dylanplecki/Naught.Net/issues<br />Documentation: http://github.com/dylanplecki/Naught.Net/wiki";
 	
 	/* Registry: Static Definitions */
-	class Registry {};
+	class Registry {
+		
+	};
 	
 	/* Functions */
 	class Functions {
 		tag = "NDT";
-		init = "x\Naught.Net\addons\naught.net.main\f\fnc_processInit.sqf";
-	};
-	
-	/* Init Files */
-	class Init {
-		
+		init = "\naught.net.main\init.sqf";
 	};
 };
 
